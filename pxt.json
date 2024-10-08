@@ -5,13 +5,16 @@
         "device": "*"
     },
     "files": [
-        "main.blocks",
         "main.ts",
         "README.md",
         "assets.json",
-        "main.py",
         "robotHead.ts",
-        "gameModels.ts"
+        "gameModels.ts",
+        "gcamera.ts",
+        "point3.ts",
+        "edge.ts",
+        "gobject.ts",
+        "robotBody.ts"
     ],
     "testFiles": [
         "test.ts"
