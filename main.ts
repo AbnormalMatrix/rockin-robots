@@ -1,8 +1,20 @@
-let camera_x = 0
-let camera_y = 0
-let camera_z = 25
-let rotation_x = 0
-let rotation_y = 0
+
+class GCamera {
+    x: number;
+    y: number;
+    z: number;
+
+    rotationX: number;
+    rotationY: number;
+
+    constructor(x: number, y: number, z: number, rotationX: number, rotationY: number) {
+        this.x = x;
+        this.y = y;
+        this.z = z;
+        this.rotationX = rotationX;
+        this.rotationY = rotationY;
+    }
+}
 
 class Point3 {
     x: number;
@@ -21,15 +33,15 @@ class Point3 {
         this.projected_x = 0;
         this.projected_y = 0;
     }
-    project(transform: Point3) {
+    project(transform: Point3, camera: GCamera) {
         // Apply rotation transformations
-        let rotated_x = (this.x + transform.x) * Math.cos(rotation_y) - (this.z + transform.z) * Math.sin(rotation_y)
-        let rotated_z = (this.x + transform.x) * Math.sin(rotation_y) + (this.z + transform.z) * Math.cos(rotation_y)
-        let rotated_y = (this.y + transform.y) * Math.cos(rotation_x) - rotated_z * Math.sin(rotation_x)
-        rotated_z = (this.y + transform.y) * Math.sin(rotation_x) + rotated_z * Math.cos(rotation_x)
+        let rotated_x = (this.x + transform.x) * Math.cos(camera.rotationY) - (this.z + transform.z) * Math.sin(camera.rotationY);
+        let rotated_z = (this.x + transform.x) * Math.sin(camera.rotationY) + (this.z + transform.z) * Math.cos(camera.rotationY);
+        let rotated_y = (this.y + transform.y) * Math.cos(camera.rotationX) - rotated_z * Math.sin(camera.rotationX);
+        rotated_z = (this.y + transform.y) * Math.sin(camera.rotationX) + rotated_z * Math.cos(camera.rotationX);
         // Perspective projection calculation
-        this.projected_x = (rotated_x - camera_x) * scene.screenWidth() / (rotated_z - camera_z)
-        this.projected_y = (rotated_y - camera_y) * scene.screenHeight() / (rotated_z - camera_z)
+        this.projected_x = (rotated_x - camera.x) * scene.screenWidth() / (rotated_z - camera.z);
+        this.projected_y = (rotated_y - camera.y) * scene.screenHeight() / (rotated_z - camera.z);
 
     }
 }
@@ -64,9 +76,9 @@ class GObject {
         this.location.z += deltaTransform.z;
     }
 
-    project_verts() {
+    project_verts(camera: GCamera) {
         for (let i = 0; i < this.verts.length; i++) {
-            this.verts[i].project(this.location);
+            this.verts[i].project(this.location, camera);
         }
     }
 
@@ -82,15 +94,13 @@ class GObject {
         }
     }
 
-    render() {
-        this.project_verts();
+    render(camera: GCamera) {
+        this.project_verts(camera);
         this.draw_lines();
     }
 }
 
-class GScene {
-
-}
+let mainCamera = new GCamera(0, 0, 25, 0, 0);
 
 let verts: Point3[] = [];
 verts.push(new Point3(-0.684551, -1.0807930000000001, -4.086873));
@@ -367,7 +377,7 @@ edges.push(new Edge(4, 24));
 let img_buf = image.create(scene.screenWidth(), scene.screenHeight())
 let planeLocation = new Point3(0, -10, 0);
 let planeObj = new GObject(7, verts, edges, planeLocation);
-planeObj.project_verts();
+planeObj.project_verts(mainCamera);
 planeObj.draw_lines();
 
 let bodyVerts: Point3[] = [];
@@ -476,7 +486,7 @@ bodyEdges.push(new Edge(2, 6));
 
 
 let bodyObj = new GObject(3, bodyVerts, bodyEdges, new Point3(0, 0, 0));
-bodyObj.project_verts();
+bodyObj.project_verts(mainCamera);
 bodyObj.draw_lines();
 img_buf.fill(1)
 //  Cube dimensions
@@ -488,8 +498,8 @@ let moveUp = true;
 game.onUpdate(function on_update() {
     img_buf.fill(0);
 
-    planeObj.render();
-    bodyObj.render();
+    planeObj.render(mainCamera);
+    bodyObj.render(mainCamera);
 
     if (moveUp) {
         planeObj.move(new Point3(0, 0.1, 0));
@@ -505,14 +515,14 @@ game.onUpdate(function on_update() {
 
     scene.setBackgroundImage(img_buf);
     
-    rotation_y += 0.01;
+    mainCamera.rotationY += 0.01;
     
-    rotation_x += controller.dy() * 0.05;
+    mainCamera.rotationX += controller.dy() * 0.05;
     
     if (controller.A.isPressed()) {
-        camera_z -= 1;
+        mainCamera.z -= 1;
     } else if (controller.B.isPressed()) {
-        camera_z += 1;
+        mainCamera.z += 1;
     }
     
 })
