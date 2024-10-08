@@ -8,6 +8,8 @@ img_buf.fill(1)
 
 let moveUp = true;
 
+
+
 game.onUpdate(function on_update() {
     img_buf.fill(0);
 
