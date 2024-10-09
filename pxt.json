@@ -9,13 +9,13 @@
         "README.md",
         "assets.json",
         "robotHead.ts",
-        "gameModels.ts",
         "gcamera.ts",
         "point3.ts",
         "edge.ts",
         "gobject.ts",
         "robotBody.ts",
-        "gscene.ts"
+        "gscene.ts",
+        "spike.ts"
     ],
     "testFiles": [
         "test.ts"
