@@ -16,6 +16,7 @@ game.onUpdate(function on_update() {
     planeObj.render(mainCamera);
     spikeObj.render(mainCamera);
 
+
     spikeObj.move(new Point3(0, 0, 0.5));
 
     if (moveUp) {

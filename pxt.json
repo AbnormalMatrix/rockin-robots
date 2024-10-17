@@ -15,7 +15,8 @@
         "gobject.ts",
         "robotBody.ts",
         "gscene.ts",
-        "spike.ts"
+        "spike.ts",
+        "uiline.ts"
     ],
     "testFiles": [
         "test.ts"

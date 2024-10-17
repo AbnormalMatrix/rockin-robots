@@ -8,10 +8,13 @@ class GScene {
 
     objects: GObject[];
 
-    constructor(cameras: GCamera[], currentCameraIndex: number, objects: GObject[]) {
+    uiLines: UiLine[];
+
+    constructor(cameras: GCamera[], currentCameraIndex: number, objects: GObject[], uiLines: UiLine[]) {
         this.cameras = cameras;
         this.currentCameraIndex = currentCameraIndex;
         this.objects = objects;
+        this.uiLines = uiLines;
     }
 
     /** Renders the entire scene */
