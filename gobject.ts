@@ -26,11 +26,17 @@ class GObject {
 
     draw_lines() {
         for (let i = 0; i < this.edges.length; i++) {
+            
+
             let p1x = this.verts[this.edges[i].p1].projected_x;
             let p1y = this.verts[this.edges[i].p1].projected_y;
 
             let p2x = this.verts[this.edges[i].p2].projected_x;
             let p2y = this.verts[this.edges[i].p2].projected_y;
+
+            if (p1x == -1 || p1y == -1 || p2x == -1 || p2y == -1) {
+                break;
+            }
 
             img_buf.drawLine(p1x + 80, p1y + 60, p2x + 80, p2y + 60, this.color)
         }

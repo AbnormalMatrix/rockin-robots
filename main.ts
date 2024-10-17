@@ -1,4 +1,4 @@
-let mainCamera = new GCamera(0, 0, 25, 0, 0);
+let mainCamera = new GCamera(0, 0, 25, 0, 0, 60);
 
 let img_buf = image.create(scene.screenWidth(), scene.screenHeight())
 
