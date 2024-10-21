@@ -32,6 +32,13 @@ class Point3 {
             this.projected_y = (rotated_y - camera.y) * scene.screenHeight() / (rotated_z - camera.z);
         }
     }
+    
+    distance(other: Point3): number {
+        const dx = this.x - other.x;
+        const dy = this.y - other.y;
+        const dz = this.z - other.z;
+        return Math.sqrt(dx * dx + dy * dy + dz * dz);
+    }
 
 
 }// Add your code here

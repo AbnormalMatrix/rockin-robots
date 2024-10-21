@@ -270,5 +270,5 @@ edges.push(new Edge(7, 4));
 edges.push(new Edge(7, 24));
 edges.push(new Edge(4, 24));
 
-let planeLocation = new Point3(0, -10, 0);
-let planeObj = new GObject(7, verts, edges, planeLocation);
+let planeLocation = new Point3(40, 0, 0);
+let robotHead = new GObject(7, verts, edges, planeLocation);

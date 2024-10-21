@@ -5,11 +5,44 @@ class GObject {
 
     location: Point3;
 
+    // Physics stuff
+    // Velocity
+    vx: number;
+    vy: number;
+    vz: number;
+    // Acceleration
+    ax: number;
+    ay: number;
+    az: number;
+    // Time of the last physics tick in ms
+    lastPhysicsTick = game.runtime();
+
     constructor(color: number, verts: Point3[], edges: Edge[], location: Point3) {
         this.color = color;
-        this.verts = verts;
-        this.edges = edges;
-        this.location = location;
+
+        // Manually copy the verts array
+        this.verts = [];
+        for (let i = 0; i < verts.length; i++) {
+            this.verts.push(new Point3 (verts[i].x, verts[i].y, verts[i].z));
+        }
+
+        // Manually copy the edges array
+        this.edges = [];
+        for (let i = 0; i < edges.length; i++) {
+            this.edges.push(new Edge(edges[i].p1, edges[i].p2)); 
+        }
+
+        // Manually copy the location object (shallow copy)
+        this.location = new Point3(location.x, location.y, location.z); 
+
+        // Set all physics properties to 0
+        this.vx = 0;
+        this.vy = 0;
+        this.vz = 0;
+        
+        this.ax = 0;
+        this.ay = 0;
+        this.az = 0;
     }
 
     move(deltaTransform: Point3) {
@@ -46,4 +79,9 @@ class GObject {
         this.project_verts(camera);
         this.draw_lines();
     }
-}// Add your code here
+
+    physicsTick() {
+        const dt = game.runtime() - this.lastPhysicsTick;
+        
+    }
+}
