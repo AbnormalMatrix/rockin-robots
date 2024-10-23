@@ -19,6 +19,7 @@ class GScene {
 
     /** Renders the entire scene */
     render() {
+        this.objects.sort(compareDistance);
         for (let i = 0; i < this.objects.length; i++) {
             this.objects[i].render(this.cameras[this.currentCameraIndex]);
         }
@@ -30,4 +31,14 @@ class GScene {
             this.currentCameraIndex = newCameraIndex;
         }
     } 
+}
+
+function compareDistance(a: GObject, b: GObject) {
+    if (a.location.fDistance(new Point3(0, 0, 0)) > b.location.fDistance(new Point3(0, 0, 0))) {
+        return -1;
+    }
+    if (a.location.fDistance(new Point3(0, 0, 0)) < b.location.fDistance(new Point3(0, 0, 0))) {
+        return 1;
+    }
+    return 0;
 }

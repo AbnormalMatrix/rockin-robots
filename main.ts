@@ -1,4 +1,4 @@
-let mainCamera = new GCamera(0, 0, 100, 0.5, 1.57079633, 0);
+let mainCamera = new GCamera(0, 0, 100, 0.5, Math.PI/2, 0);
 
 let img_buf = image.create(scene.screenWidth(), scene.screenHeight())
 
@@ -12,7 +12,7 @@ let mainScene = new GScene([mainCamera], 0, [], []);
 
 forever(function() {
     
-    pause(1000);
+    pause(100);
     switch(randint(1,3)) {
         case 1:
             mainScene.objects.push(new GObject(randint(1, 14), spikeVerts, spikeEdges, new Point3(-250, 0, 25)));
@@ -35,8 +35,8 @@ game.onUpdate(function on_update() {
     robotHead.render(mainCamera);
 
     for (let i = mainScene.objects.length - 1; i >= 0; i--) {
-        mainScene.objects[i].move(new Point3(1, 0, 0));
-        if (mainScene.objects[i].location.distance(new Point3(0, 0, 0)) > 1000) {
+        mainScene.objects[i].move(new Point3(2, 0, 0));
+        if (mainScene.objects[i].location.distance(new Point3(0, 0, 0)) > 255) {
             mainScene.objects.splice(i, 1);
         }
     }

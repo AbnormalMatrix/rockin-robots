@@ -40,5 +40,13 @@ class Point3 {
         return Math.sqrt(dx * dx + dy * dy + dz * dz);
     }
 
+    // the same but with no square root
+    fDistance(other: Point3): number {
+        const dx = this.x - other.x;
+        const dy = this.y - other.y;
+        const dz = this.z - other.z;
+        return (dx * dx + dy * dy + dz * dz);
+    }
+
 
 }// Add your code here
