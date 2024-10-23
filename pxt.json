@@ -16,7 +16,8 @@
         "robotBody.ts",
         "gscene.ts",
         "spike.ts",
-        "uiline.ts"
+        "uiline.ts",
+        "battery.ts"
     ],
     "testFiles": [
         "test.ts"

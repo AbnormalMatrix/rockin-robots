@@ -5,6 +5,9 @@ class GObject {
 
     location: Point3;
 
+    // Object tag
+    tag: string;
+
     // Physics stuff
     // Velocity
     vx: number;
@@ -17,7 +20,7 @@ class GObject {
     // Time of the last physics tick in ms
     lastPhysicsTick = game.runtime();
 
-    constructor(color: number, verts: Point3[], edges: Edge[], location: Point3) {
+    constructor(color: number, verts: Point3[], edges: Edge[], location: Point3, tag?: string) {
         this.color = color;
 
         // Manually copy the verts array
@@ -34,6 +37,8 @@ class GObject {
 
         // Manually copy the location object (shallow copy)
         this.location = new Point3(location.x, location.y, location.z); 
+
+        this.tag = tag;
 
         // Set all physics properties to 0
         this.vx = 0;
@@ -82,6 +87,8 @@ class GObject {
 
     physicsTick() {
         const dt = game.runtime() - this.lastPhysicsTick;
-        
+        this.vx = this.vx + dt * this.ax;
+        this.vy = this.vy + dt * this.ay;
+        this.vz = this.vz + dt * this.az;
     }
 }
