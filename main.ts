@@ -11,7 +11,7 @@ let mainScene = new GScene([mainCamera], 0, [], []);
 
 forever(function() {
     
-    pause(1000);
+    pause(500);
     switch(randint(1,3)) {
         case 1:
             mainScene.objects.push(new GObject(randint(1, 14), spikeVerts, spikeEdges, new Point3(-250, 0, 25)));
@@ -38,15 +38,31 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function() {
 })
 
 
+
+
 game.onUpdate(function on_update() {
     img_buf.fill(0);
 
     mainScene.render();
 
+    
+    robotHead.physicsTick();
     robotHead.render(mainCamera);
 
+    if (controller.A.isPressed() && robotHead.onGround) {
+        robotHead.vy = 0.3;
+    }
+
     for (let i = mainScene.objects.length - 1; i >= 0; i--) {
-        mainScene.objects[i].move(new Point3(1, 0, 0));
+        mainScene.objects[i].move(new Point3(2, 0, 0));
+
+        // check if you should die
+
+        if (mainScene.objects[i].location.distance(robotHead.location) < 8) {
+            robotHead.render(mainCamera);
+            game.gameOver(false);
+        }
+
         if (mainScene.objects[i].location.distance(new Point3(0, 0, 0)) > 255) {
             mainScene.objects.splice(i, 1);
         }

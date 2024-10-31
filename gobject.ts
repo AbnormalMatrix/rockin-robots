@@ -17,6 +17,11 @@ class GObject {
     ax: number;
     ay: number;
     az: number;
+
+    minY: number;
+
+    onGround: boolean;
+
     // Time of the last physics tick in ms
     lastPhysicsTick = game.runtime();
 
@@ -46,8 +51,11 @@ class GObject {
         this.vz = 0;
         
         this.ax = 0;
-        this.ay = 0;
+        this.ay = -0.001;
         this.az = 0;
+
+        this.minY = this.location.y;
+        this.onGround = true;
     }
 
     move(deltaTransform: Point3) {
@@ -90,5 +98,22 @@ class GObject {
         this.vx = this.vx + dt * this.ax;
         this.vy = this.vy + dt * this.ay;
         this.vz = this.vz + dt * this.az;
+
+        // update position
+        let newX = this.location.x + dt * this.vx;
+
+        let newY = this.location.y + dt * this.vy;
+
+        if (newY <= this.minY) {
+            newY = this.minY;
+            this.onGround = true;
+        } else {
+            this.onGround = false;
+        }
+        
+        let newZ = this.location.z + dt * this.vz;
+
+        this.location = new Point3(newX, newY, newZ);
+        this.lastPhysicsTick = game.runtime();
     }
 }
