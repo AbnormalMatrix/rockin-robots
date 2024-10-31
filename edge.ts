@@ -1,3 +1,4 @@
+// edges are used in GObjects
 class Edge {
     p1: number;
     p2: number;
@@ -6,4 +7,4 @@ class Edge {
         this.p1 = p1;
         this.p2 = p2;
     }
-}// Add your code here
+}

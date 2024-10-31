@@ -1,3 +1,4 @@
+// 3D objects class
 class GObject {
     color: number;
     verts: Point3[];
@@ -45,12 +46,13 @@ class GObject {
 
         this.tag = tag;
 
-        // Set all physics properties to 0
+        // Set all physics properties to 0 (except gravity)
         this.vx = 0;
         this.vy = 0;
         this.vz = 0;
         
         this.ax = 0;
+        // set gravity
         this.ay = -0.001;
         this.az = 0;
 
@@ -72,8 +74,6 @@ class GObject {
 
     draw_lines() {
         for (let i = 0; i < this.edges.length; i++) {
-            
-
             let p1x = this.verts[this.edges[i].p1].projected_x;
             let p1y = this.verts[this.edges[i].p1].projected_y;
 
@@ -88,11 +88,13 @@ class GObject {
         }
     }
 
+    // renders the object
     render(camera: GCamera) {
         this.project_verts(camera);
         this.draw_lines();
     }
 
+    // simulate physics based on delta time (time integration)
     physicsTick() {
         const dt = game.runtime() - this.lastPhysicsTick;
         this.vx = this.vx + dt * this.ax;
@@ -104,6 +106,7 @@ class GObject {
 
         let newY = this.location.y + dt * this.vy;
 
+        // make the object not fall through the ground
         if (newY <= this.minY) {
             newY = this.minY;
             this.onGround = true;

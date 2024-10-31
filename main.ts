@@ -1,13 +1,13 @@
+// create a 3D camera rotated 90 degrees or pi/2
 let mainCamera = new GCamera(0, 0, 100, 0.5, Math.PI/2, 0);
 
+// this image needs to fill the whole screen 160x120
 let img_buf = image.create(scene.screenWidth(), scene.screenHeight())
 
-img_buf.fill(1)
-
-let moveUp = true;
-
+// create a scene object to store the spikes
 let mainScene = new GScene([mainCamera], 0, [], []);
 
+// add some background music
 music.play(music.createSong(hex`
     003c000a64170200001c00010a006400f401640000040000000000000000000000000005000002e22300000b00033833201600210001202d0038000338332043004e0001205a0065000338332070007b00011b86009100033833209d00a8000122b300be0003383323ca00d5000123e000eb0003383323f600010101230d0118010338332223012e0101222e0139010238333a014501012350015b01033833226601710103342f1c7d018801011c93019e0103342f1caa01b501011cc001cb0103342f1cd601e101011ced01f80103342f1c03020e02011c1a02250203332e1b30023b02011b4602510203332e1b5d026802011b73027e0203332e218a02950201219502a00202332ea002ab020121b602c10203332e21cd02d802053833202c38e302ee020120fa020503053833202f3b10031b0301202603310305383320333f3d034803011b53035e0304383320386a037503012280038b03033833239603a1030123ad03b803043833233ac303ce030123da03e50303383322f003fb030122fb0306040238330604110402233b1d0428040338332233043e0405342f1c2c384a045504011c60046b0405342f1c2f3b76048104011c8d04980405342f1c333fa304ae04011cba04c50404342f1c38d004db04011ce604f10403332e1bfd040805011b13051e0504332e1b3a2a053505011b40054b0503332e215605610501
     2162056d0502332e6d05780506213b1b1d1f2183058e0505332e211b1d8e059905011b9a05a505073833202c381918b005bb050120c605d105073833202f3b1f21dd05e8050120f305fe0508383320333f1d1b240a061506011b20062b060638332038211f3606410601224d06580605383323191863066e0601237a068506063833233a211f90069b060123a606b10606383322241d1bbd06c8060122c806d306053833241d1bd306de0604233b211fea06f50606383322241d1b00070b0707342f1c2c38191816072107011c2d07380707342f1c2f3b211f43074e07011c5a07650708342f1c333f1d1b2470077b07011c8607910706342f1c38211f9d07a807011cb307be0705332e1b1918ca07d507011be007eb0706332e1b3a211ff6070108011b0d08180806332e21241d1b23082e0801212e08390805332e241d1b3a08450804213b211f50085b0806332e21241d1b66087108073833202c3819187d088808012093089e08073833202f3b1f21aa08b5080120c008cb0808383320333f1d1b24d608e108011bed08f8080638332038211f03090e0901221a09250905383323191830093b09012346095109063833233a211f5d096809012373097e0906383322241d1b8a09950901229509a009053833241d1ba009ab0904233b211fb609c10906383322241d1bcd09d80907342f1c2c381918e309ee09011cfa0905
@@ -32,9 +32,8 @@ music.play(music.createSong(hex`
     4f514f010aa04fab4f010b53505e500108ad50b850010a06511151010bba51c551010813521e52010a6d527852010b20532b5301087a538553010ad353de53010b
 `), music.PlaybackMode.LoopingInBackground)
 
-
+// spawns the spikes randomly
 forever(function() {
-    
     pause(500);
     switch(randint(1,3)) {
         case 1:
@@ -49,6 +48,7 @@ forever(function() {
     
 })
 
+// player movement
 controller.left.onEvent(ControllerButtonEvent.Pressed, function() {
     if (robotHead.location.z > -25) {
         robotHead.move(new Point3(0, 0, -25));
@@ -61,45 +61,58 @@ controller.right.onEvent(ControllerButtonEvent.Pressed, function() {
     }
 })
 
+// the score is just incremented every second
+info.setScore(0);
 
+game.onUpdateInterval(1000, function() {
+    info.changeScoreBy(1);
+})
 
+// player state
+let alive = true;
 
 game.onUpdate(function on_update() {
+    // fill the image with a color (black)
     img_buf.fill(0);
 
+    // render the spikes
     mainScene.render();
 
-    
+    // kill the player after the scene renders so you know if you hit a spike
+    if (!alive) {
+        game.gameOver(false);
+    }
+
+    // the robot is seperate from the scene so it has to be rendered here
     robotHead.physicsTick();
     robotHead.render(mainCamera);
 
+    // jump
     if (controller.A.isPressed() && robotHead.onGround) {
         robotHead.vy = 0.3;
     }
 
+    // iterate through the array backwards so that the indexes don't break when splicing the array
     for (let i = mainScene.objects.length - 1; i >= 0; i--) {
         mainScene.objects[i].move(new Point3(2, 0, 0));
 
         // check if you should die
-
         if (mainScene.objects[i].location.distance(robotHead.location) < 8) {
-            robotHead.render(mainCamera);
-            game.gameOver(false);
+            alive = false;
         }
 
+        // remove objects from the scene if they are far away
         if (mainScene.objects[i].location.distance(new Point3(0, 0, 0)) > 255) {
             mainScene.objects.splice(i, 1);
         }
     }
 
-    
-
-
+    // set the makecode background image to the image buffer we wrote to
     scene.setBackgroundImage(img_buf);
 
 
 
-    // mainCamera.rotationY += controller.dx() * 0.01;
+    // mainCamera.rotationY  += 0.01;
     
     // mainCamera.rotationX += controller.dy() * 0.01;
     

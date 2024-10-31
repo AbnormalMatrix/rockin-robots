@@ -1,3 +1,4 @@
+// 3D camera object for 3D scenes
 class GCamera {
     x: number;
     y: number;
